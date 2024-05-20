@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Configuration packages="com.mulesoft.ch.logging.appender,com.splunk.logging.org" status="INFO">
+    
+
+<Appenders>
+
+
+
+         <Http name="Splunk" url="http://localhost:8088/services/collector/raw" >
+
+             <Property name="Token" value="Splunk 5ed04a2c-8221-45e9-9708-7d7b710b0fd7"> </Property>
+
+             <PatternLayout pattern="[%d{MM-dd HH:mm:ss}] %-5p %c{1} [%t]: %m%n"></PatternLayout>
+
+        </Http>
+
+</Appenders>
+
+   
+    
+     <Loggers>
+        <!-- Http Logger shows wire traffic on DEBUG -->
+        <!--AsyncLogger name="org.mule.service.http.impl.service.HttpMessageLogger" level="DEBUG"/-->
+        <AsyncLogger name="org.mule.service.http" level="WARN"/>
+        <AsyncLogger name="org.mule.extension.http" level="WARN"/>
+
+        <!-- Mule logger -->
+        <AsyncLogger name="org.mule.runtime.core.internal.processor.LoggerMessageProcessor" level="INFO"/>
+
+     
+        
+        <AsyncRoot level="INFO">
+    <AppenderRef ref="splunk" />
+</AsyncRoot>
+    </Loggers>
+</Configuration>

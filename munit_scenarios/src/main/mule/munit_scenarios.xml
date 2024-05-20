@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="81fa7707-e8a2-4393-82f9-20cb176960a0" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="1f4cf0c0-4388-45d9-89c3-f90aabec5dd1" />
+	<http:request-config name="HTTP_Request_configuration1" doc:name="HTTP Request configuration" doc:id="e1414cf5-5878-45bf-aa82-e5e495c4f436" >
+		<http:request-connection host="localhost" port="8081" />
+	</http:request-config>
+	<flow name="munit_scenariosFlow" doc:id="83c1000f-59bf-4ac0-8b56-1f794edbb432" >
+		<http:listener doc:name="Listener" doc:id="90294cab-0b1b-4d72-8c50-e0947530be19" config-ref="HTTP_Listener_config" path="/munit"/>
+		<logger level="INFO" doc:name="Logger" doc:id="caa6fdeb-b1e0-44d2-a11f-3bf9b9f12a90" message="#[payload]"/>
+		<http:request method="PUT" doc:name="Request" doc:id="28282d0f-6ef1-452d-a61b-86b0b2249825" config-ref="HTTP_Request_configuration1" url="/api/db1">
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"field2" : "Value"
+}]]]></http:query-params>
+		</http:request>
+		<logger level="INFO" doc:name="Logger" doc:id="e86b23c5-28e6-42b8-9273-4b42bcc0536b" message="after http request"/>
+		<error-handler >
+<!-- [STUDIO:"On Error Continue"]			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="e1a8fa5c-7cfd-4801-b5cf-09ecd04973b6" type="HTTP:CONNECTIVITY">
+				<logger level="INFO" doc:name="Logger" doc:id="9f49f5bb-dfec-41b7-a0a5-79d01f5bf09e" message="continue"/>
+			</on-error-continue> [STUDIO] -->
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="591facbf-57c3-4403-9af6-7011c9ddd39c" type="HTTP:CONNECTIVITY">
+				<logger level="INFO" doc:name="Logger" doc:id="57fe7c0c-f815-48ff-a4d4-bec90fe13398" message="propogate"/>
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+</mule>

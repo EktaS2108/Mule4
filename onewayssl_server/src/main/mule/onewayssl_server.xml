@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="bc1478cb-220c-4a06-b8f9-c397f063ad8b" >
+		<http:listener-connection host="localhost" port="8082" protocol="HTTPS">
+			<tls:context >
+				<tls:key-store type="jks" path="server-keystore.jks" keyPassword="ekta21" password="ekta21" />
+			</tls:context>
+		</http:listener-connection>
+	</http:listener-config>
+	<flow name="onewayssl_serverFlow" doc:id="fe5f2c02-1343-42c1-8c46-82e37ed682fa" >
+		<http:listener doc:name="Listener" doc:id="0a084d76-20eb-49a2-be91-d285793c4b2e" config-ref="HTTP_Listener_config" path="/sslserver"/>
+		<set-payload value='"hello from server"' doc:name="Set Payload" doc:id="6a2d00bb-5cc5-45b9-a726-ba0b5a38f627" />
+	</flow>
+</mule>

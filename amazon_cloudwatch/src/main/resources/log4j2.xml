@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Configuration packages="com.mulesoft.ch.logging.appender,com.kdgregory.log4j2.aws" status="debug">
+<Appenders>
+<CloudWatchAppender name="CLOUDWATCH">
+    <logGroup>mule</logGroup>
+    <logStream>mulestream</logStream>
+    <rotationMode>daily</rotationMode>
+    <PatternLayout
+        pattern="[%d{yyyy-MM-dd HH:mm:ss.SSS}] %-5p [%t] %c - %m%n" />
+</CloudWatchAppender>
+
+</Appenders>
+<Loggers>
+
+<AsyncRoot level="INFO">
+    <AppenderRef ref="CLOUDWATCH" />
+</AsyncRoot>
+</Loggers>
+ 
+</Configuration>

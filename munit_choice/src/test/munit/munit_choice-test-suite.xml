@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="munit_choice-test-suite.xml" >
+		<munit:parameterizations >
+			<munit:parameterization name="Red color route" >
+				<munit:parameters >
+					<munit:parameter propertyName="input" value="Red" />
+					<munit:parameter propertyName="output" value="color is Red" />
+				</munit:parameters>
+			</munit:parameterization>
+			<munit:parameterization name="Green color route" >
+				<munit:parameters >
+					<munit:parameter propertyName="input" value="Green" />
+					<munit:parameter propertyName="output" value="color is Green" />
+				</munit:parameters>
+			</munit:parameterization>
+			<munit:parameterization name="Default route" >
+				<munit:parameters >
+					<munit:parameter propertyName="output" value="No color" />
+					<munit:parameter propertyName="input" value="default" />
+				</munit:parameters>
+			</munit:parameterization>
+		</munit:parameterizations>
+		
+	</munit:config>
+	<munit:test name="munit_choice-test-suite-munit_choiceFlowTest" doc:id="14e1875f-5845-46c6-9102-fe1545fc8aac" description="Test">
+		<munit:behavior >
+			<munit:set-event doc:name="Set Event" doc:id="3c99cfc0-ef70-4283-bf9b-b47bc0780b77" >
+				<munit:payload value="${input}" mediaType="text/plain" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to munit_choiceFlow" doc:id="f82b74f8-cb7d-41d5-82b9-f15074726acb" name="munit_choiceFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="6ff5b6ce-5c1a-4f6c-93e6-92e3e5b9d90e" actual="#[payload]" expected="${output}" message="payload did not match expected"/>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

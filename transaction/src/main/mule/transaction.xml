@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="7fc736f0-e10e-4087-acf9-f1b238865f6f" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="faf11cc5-1337-4d85-88dd-c6cdd4cd8636" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="root" database="sys"/>
+	</db:config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="193e8d69-24e0-4ed9-b48b-75dc5988a872" >
+		<file:connection workingDir="C:\Users\91971\mulesoft_repo\" />
+	</file:config>
+	<flow name="transactionFlow" doc:id="e22261e6-2be9-4f9d-86b1-0966b029ee15" >
+		<http:listener doc:name="Listener" doc:id="252cbc9c-69e8-42b3-b1c7-e8c2dd78c99e" config-ref="HTTP_Listener_config" path="/trans"/>
+		<ee:transform doc:name="Transform Message" doc:id="bface5f3-ae66-44e6-b36e-4f9bc6e70f8a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	ItemType: payload01.ItemType,
+	Region: payload01.Region,
+	Country: payload01.Country,
+	OrderID: payload01.OrderID  
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<try doc:name="Try" doc:id="a04be46f-fb1d-4684-bce6-fc89b7301745" transactionalAction="ALWAYS_BEGIN">
+			<db:bulk-insert doc:name="Bulk insert" doc:id="5381edf4-36ba-4c7f-bcb3-c5cc4f22ebe8" config-ref="Database_Config">
+			<db:sql><![CDATA[insert into Sales values (:OrderID,:Region,:Country,:ItemType)]]></db:sql>
+		</db:bulk-insert>
+			<error-handler>
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="12eecde2-f989-4513-9d6b-39d278d4bd26" >
+					<logger level="INFO" doc:name="Logger" doc:id="855cad6f-1268-45b5-9d28-dab4eafc27fc" message="#[payload]"/>
+				</on-error-propagate>
+			</error-handler>
+		</try>
+		<ee:transform doc:name="Transform Message" doc:id="d75e06e4-276e-4161-a3aa-407af8a11856" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json --- payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="84a0dfe4-2d00-4e70-a1ec-a6904b0b2f57" message="#[output application/json --- payload]"/>
+	</flow>
+<!-- [STUDIO:"transactionFlow1"]	<flow name="transactionFlow1" doc:id="20769c1a-5dee-4c00-a9fa-280d3704a0b8" >
+		<http:listener doc:name="Listener" doc:id="82c62b9b-7032-4de1-a763-097a5bfe2f9c" config-ref="HTTP_Listener_config" path="/trans" />
+		<ee:transform doc:name="Transform Message" doc:id="1f4034e7-5abb-495f-ab69-0abfea5822c9" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+&#45;&#45;-
+payload map ( payload01 , indexOfPayload01 ) -> {
+	ItemType: payload01.ItemType,
+	Region: payload01.Region,
+	Country: payload01.Country,
+	OrderID: payload01.OrderID as String 
+}&#93;&#93;></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<try doc:name="Try" doc:id="2ac4cb99-5834-40df-b0fa-4bee94dacde6" >
+			<db:bulk-insert doc:name="Bulk insert" doc:id="5f56ff31-7801-4f5e-ae8d-a26cfd6a201c" config-ref="Database_Config" transactionalAction="NOT_SUPPORTED" >
+				<db:sql ><![CDATA[insert into Sales values (:OrderID,:Region,:Country,:ItemType)&#93;&#93;></db:sql>
+			</db:bulk-insert>
+		
+</try>
+		<logger level="INFO" doc:name="Logger" doc:id="f523dbd5-d0cc-414d-9040-54512d22b9dd" message="#[payload&#93;" />
+	</flow> [STUDIO] -->
+</mule>

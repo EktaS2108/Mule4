@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="e85c19b7-31e7-4c6c-bea3-42a0102bd7da" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="munit_choiceFlow" doc:id="b674cf76-1a1b-4e31-b621-5061db896d69" >
+		<http:listener doc:name="Listener" doc:id="2dda640f-a99a-4cde-924c-292ba46126e9" config-ref="HTTP_Listener_config" path="/choice"/>
+		<choice doc:name="Choice" doc:id="0ba1de06-e713-46fa-b3a8-2bd444a992f7">
+			<when expression='#[payload == "Red"]'>
+				<set-payload value="color is Red" doc:name="Set Payload" doc:id="13fbe750-0122-4967-803b-d19470b82771" />
+			</when>
+			<when expression='#[payload == "Green"]'>
+				<set-payload value="color is Green" doc:name="Set Payload" doc:id="f1beadfb-8658-4319-8738-926f09518a8d" />
+			</when>
+			<otherwise>
+				<set-payload value="No color" doc:name="Set Payload" doc:id="81f363d4-6356-4c57-b04f-0d4af6d4c41f" />
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="End" doc:id="ff76b954-6b4a-475a-95b1-55f9d813e243" message="end"/>
+	</flow>
+</mule>

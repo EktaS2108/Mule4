@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="5a195c06-3f6c-494f-8627-959d43f92f5b" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="munitFlow" doc:id="4cbac7ec-d2f1-41d6-9193-6fab0f56b3e6" >
+		<http:listener doc:name="Listener" doc:id="cec2dd12-8ccd-41ce-94f4-06dae71d96a9" config-ref="HTTP_Listener_config" path="/munit_test"/>
+		<choice doc:name="Choice" doc:id="15ca5bb7-8eb5-4cd0-a3a8-16b884bf808b" >
+			<when expression="#[%dw 2.0&#10;import * from dw::core::Strings&#10;---&#10;sizeOf(payload)&lt;3]">
+				<logger level="INFO" doc:name="Logger" doc:id="1c641b75-c4f9-4c98-a775-f47aec43dffe" message="hello"/>
+				<set-payload value="hello" doc:name="Set Payload" doc:id="a66bbdd2-6555-475c-8af0-b2bfcad104eb" />
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="5b980103-e129-463a-a607-6f3d119f5bee" message="hi"/>
+				<set-payload value="hi" doc:name="Set Payload" doc:id="cc0b9346-6b59-41a7-9d4c-0dcbbcd36fdf" />
+			</otherwise>
+		</choice>
+	</flow>
+</mule>

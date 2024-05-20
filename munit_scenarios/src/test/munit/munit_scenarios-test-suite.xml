@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="munit_scenarios-test-suite.xml" />
+	<munit:test name="munit_scenarios-test-suite-munit_scenariosFlowTest" doc:id="7d944677-1b0f-404f-a3f4-1806cc40a75c" description="Test">
+		<munit:behavior>
+			<!-- [STUDIO:"Flow Reference"]<flow-ref doc:name="Flow Reference" doc:id="85815285-7a39-4b6d-8096-39c38cec39da" name="munit_scenarios-test-suiteFlow"/> [STUDIO] -->
+			<munit-tools:mock-when doc:name="Mock when" doc:id="5884d4a9-8700-4633-aabb-30a8b8ed2c28" processor="http:request" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="28282d0f-6ef1-452d-a61b-86b0b2249825" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[MunitTools::getResourceAsString('response.json')]" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="cf7716f0-ef3b-48ad-a1ed-589d626d8495" >
+				<flow-ref doc:name="Flow-ref to munit_scenariosFlow" doc:id="f8dfbf3a-c8c8-4126-b575-78735ec3619f" name="munit_scenariosFlow" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="37a8b269-716e-454a-9cc6-3de741d5bcbe" />
+				</error-handler>
+			</try>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="79c3c272-4385-4bdb-90fa-33dc9a13eb14" processor="logger" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="e86b23c5-28e6-42b8-9273-4b42bcc0536b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<logger level="INFO" doc:name="Logger" doc:id="5cb6d391-750d-4810-a76c-b67d2f0377a1" message="#[output application/json --- &#10;payload]"/>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="4592770f-c268-41f6-886d-9bddc8c528f0" expression="#[payload]" is="#[MunitTools::equalTo(MunitTools::getResourceAsString('response.json'))]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="munit_scenarios-test-suiteTest" doc:id="337e77a2-081a-4ab9-8403-dc533800d692">
+		<munit:behavior >
+			<flow-ref doc:name="Flow Reference" doc:id="3ec55e67-9099-4843-855f-a520db2af707" name="munit_scenarios-test-suiteFlow"/>
+<!-- [STUDIO:"Mock when"]			<munit-tools:mock-when doc:name="Mock when" doc:id="223c2936-e8e6-4fcf-97b4-2701620dfb2c" processor="http:request" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="28282d0f-6ef1-452d-a61b-86b0b2249825" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="HTTP:CONNECTIVITY" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when> [STUDIO] -->
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="db693df8-db8e-4b84-898d-9b365235493a" >
+				<flow-ref doc:name="Flow-ref to munit_scenariosFlow" doc:id="754d174b-69c5-4ea0-a3f1-86537e93dd50" name="munit_scenariosFlow" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="64364a0b-cff3-40fb-884a-90364c5a1198" />
+				</error-handler>
+			</try>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="b633720f-7c2f-4c9e-aa2e-416072d24b4b" processor="logger" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="57fe7c0c-f815-48ff-a4d4-bec90fe13398" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<flow name="munit_scenarios-test-suiteFlow" doc:id="bef5a39c-7df4-469c-b218-bc93988cf8cb" >
+		<munit-tools:mock-when doc:name="Mock when" doc:id="ed739b8e-4043-49d7-b015-b287c56dc4d1" processor="http:request">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="28282d0f-6ef1-452d-a61b-86b0b2249825" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+					<munit-tools:error typeId="HTTP:CONNECTIVITY" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+	</flow>
+
+
+</mule>
